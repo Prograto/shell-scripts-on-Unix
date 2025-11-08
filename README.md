@@ -62,7 +62,7 @@ awk -F';' '
 ' > "$OUTFILE"
 
 echo "✅ Data extracted successfully and saved to $OUTFILE"
-
+```
 
 ### Step 2️⃣ — Make the script executable
 
