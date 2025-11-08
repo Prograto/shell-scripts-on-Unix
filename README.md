@@ -1,41 +1,47 @@
 🧠 Unix Shell Script – Extract Scheme Name and NAV (AMFI Data)
 🧩 Overview
 
-This shell script downloads the latest Net Asset Value (NAV) data from AMFI (Association of Mutual Funds in India) and extracts only the following fields:
+This shell script downloads the latest Net Asset Value (NAV) data from AMFI (Association of Mutual Funds in India) and extracts only two fields:
 
 Scheme Name
 
 Net Asset Value (NAV)
 
-It then saves the results in a Tab-Separated Values (TSV) file named nav.tsv.
+It saves the results in a Tab-Separated Values (TSV) file named nav.tsv.
 
 ⚙️ Requirements
 
 To run this script on Windows, you’ll need Git Bash (which provides a Unix-like terminal).
 
-✅ Steps to install:
+✅ Install Git Bash:
 
 Download Git for Windows → https://git-scm.com/download/win
 
-During setup, choose “Use Git Bash only” or “Use Git from Windows Terminal”.
+During installation, choose “Use Git Bash only” or “Use Git from Windows Terminal”.
 
 After installation, open Git Bash.
 
-🚀 How to Run
+🚀 How to Run the Script in Git Bash
 1️⃣ Save the script as extract_nav.sh
 
-Create a file named extract_nav.sh and paste the following code:
+Create a new file named extract_nav.sh and paste the code below 👇
 
+🧾 Script: extract_nav.sh
 #!/usr/bin/env bash
 # extract_nav.sh
-# This script fetches NAV data from AMFI India, extracts Scheme Name and NAV, and saves them in a TSV file.
+# This script fetches NAV data from AMFI India, extracts Scheme Name and NAV,
+# and saves them in a TSV file.
 
+# URL containing mutual fund NAV data
 URL="https://www.amfiindia.com/spages/NAVAll.txt"
+
+# Output file name
 OUTFILE="nav.tsv"
 
-# Fetch and filter data
+# Fetch the data and extract required fields
 curl -s "$URL" | \
 awk -F';' '
+  # Process only valid lines (where first field is numeric)
   $1 ~ /^[0-9]+$/ {
     scheme = $4
     nav = $5
@@ -44,28 +50,26 @@ awk -F';' '
   }
 ' > "$OUTFILE"
 
+# Print completion message
 echo "✅ Data extracted and saved to $OUTFILE"
 
 2️⃣ Make the script executable
 
-In Git Bash, go to the folder where you saved the file and run:
+Open Git Bash, navigate to the folder where the script is saved, and run:
 
 chmod +x extract_nav.sh
 
 3️⃣ Run the script
 ./extract_nav.sh
 
-4️⃣ Check the output
+4️⃣ View the output file
 
-After successful execution, a new file named nav.tsv will appear in the same folder.
-
-You can view it by running:
+The script creates a file named nav.tsv in the same folder.
+To see the first few lines:
 
 head nav.tsv
 
-
-📄 Example output:
-
+📄 Sample Output (nav.tsv)
 Aditya Birla Sun Life Banking & PSU Debt Fund  - DIRECT - IDCW	109.8609
 Aditya Birla Sun Life Banking & PSU Debt Fund  - DIRECT - MONTHLY IDCW	117.6419
 Aditya Birla Sun Life Banking & PSU Debt Fund - Regular Plan-Growth	375.2609
@@ -75,34 +79,48 @@ Axis Banking & PSU Debt Fund - Direct Plan - Growth Option	2785.0785
 
 The script uses curl to silently download (-s) the AMFI data file.
 
-It then pipes (|) the data to awk, which splits each line by semicolons (-F';').
+It then pipes (|) the data to awk, which splits each line using semicolons (-F';').
 
-Only lines starting with a numeric Scheme Code are valid data rows.
+Only lines starting with a numeric Scheme Code are valid NAV records.
 
-From those rows, the 4th field ($4) is the Scheme Name and the 5th field ($5) is the NAV.
+The 4th field ($4) contains the Scheme Name, and the 5th field ($5) contains the NAV (Net Asset Value).
 
 The result is printed as SchemeName<TAB>NAV and saved to nav.tsv.
 
-💡 Bonus Thought: Should This Be Stored in JSON?
+💬 Why JSON Might Be Better
 
-While TSV is lightweight and easy to parse with command-line tools, JSON would be more suitable for structured and API-based use cases.
+Although TSV is easy for quick command-line parsing, JSON offers richer structure and is more suitable for data exchange or APIs.
 
 Format	Pros	Cons
-TSV	Simple, fast to process with awk, cut, grep	No field names, poor for nested data
-JSON	Structured, API-friendly, supports metadata	Slightly larger, less readable in terminal
+TSV	Simple, fast, human-readable	Lacks structure and field names
+JSON	Structured, API-friendly, supports metadata	Larger, less readable in terminal
+Example JSON structure (same data in JSON)
+[
+  {
+    "scheme": "Aditya Birla Sun Life Banking & PSU Debt Fund - Direct - IDCW",
+    "nav": 109.8609
+  },
+  {
+    "scheme": "Axis Banking & PSU Debt Fund - Direct Plan - Growth Option",
+    "nav": 2785.0785
+  }
+]
 
-👉 Ideally, AMFI could offer both TSV (for humans) and JSON (for systems).
+🔄 Optional – Convert TSV to JSON (Bonus)
 
-🔄 Optional – Convert TSV to JSON
+If you want to convert your nav.tsv file into JSON directly in Git Bash, run:
 
-If you wish to convert your nav.tsv into JSON (one-liner in Git Bash):
+awk -F'\t' 'BEGIN{print "["} {
+  printf "%s{\"scheme\":\"%s\",\"nav\":%s}", (NR==1?"":","), gensub(/"/,"\\\"","g",$1), $2
+} END{print "]"}' nav.tsv > nav.json
 
-awk -F'\t' 'BEGIN{print "["} {printf "%s{\"scheme\":\"%s\",\"nav\":%s}", (NR==1?"":","), gensub(/"/,"\\\"","g",$1), $2} END{print "]"}' nav.tsv > nav.json
 
-✅ Expected Files After Running
-extract_nav.sh   # The shell script
-nav.tsv          # Extracted data (tab-separated)
-README.md        # This documentation
+This will create a nav.json file in the same folder.
+
+✅ Expected Files After Execution
+extract_nav.sh   # Shell script
+nav.tsv          # Extracted Scheme Name and NAV data
+README.md        # Documentation
 
 👨‍💻 Author
 
