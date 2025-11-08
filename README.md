@@ -64,19 +64,19 @@ awk -F';' '
 echo "✅ Data extracted successfully and saved to $OUTFILE"
 
 
-Step 2️⃣ — Make the script executable
+### Step 2️⃣ — Make the script executable
 
 Open Git Bash, navigate to the folder where your file is saved, and run:
 
 chmod +x extract_nav.sh
 
-Step 3️⃣ — Run the script
+### Step 3️⃣ — Run the script
 
 Execute the script by running:
 
 ./extract_nav.sh
 
-Step 4️⃣ — Verify the output
+### Step 4️⃣ — Verify the output
 
 After execution, a file named nav.tsv will be created in the same folder.
 View the first few lines with:
