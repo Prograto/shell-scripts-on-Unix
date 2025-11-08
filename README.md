@@ -74,20 +74,20 @@ chmod +x extract_nav.sh
 
 Execute the script by running:
 
-./extract_nav.sh
+```./extract_nav.sh```
 
 ### Step 4️⃣ — Verify the output
 
 After execution, a file named nav.tsv will be created in the same folder.
 View the first few lines with:
 
-head nav.tsv
+```head nav.tsv```
 
 📊 Sample Output (nav.tsv)
-Aditya Birla Sun Life Banking & PSU Debt Fund  - DIRECT - IDCW	109.8609
+```Aditya Birla Sun Life Banking & PSU Debt Fund  - DIRECT - IDCW	109.8609
 Aditya Birla Sun Life Banking & PSU Debt Fund  - DIRECT - MONTHLY IDCW	117.6419
 Aditya Birla Sun Life Banking & PSU Debt Fund - Regular Plan-Growth	375.2609
-Axis Banking & PSU Debt Fund - Direct Plan - Growth Option	2785.0785
+Axis Banking & PSU Debt Fund - Direct Plan - Growth Option	2785.0785```
 
 🧠 Explanation
 
@@ -114,7 +114,7 @@ Format	Advantages	Disadvantages
 TSV	Lightweight, human-readable, easy with awk/cut	No structure or field names
 JSON	Structured, hierarchical, API-friendly	Slightly larger, less readable for humans
 Example JSON representation
-[
+```[
   {
     "scheme": "Aditya Birla Sun Life Banking & PSU Debt Fund - Direct - IDCW",
     "nav": 109.8609
@@ -123,15 +123,15 @@ Example JSON representation
     "scheme": "Axis Banking & PSU Debt Fund - Direct Plan - Growth Option",
     "nav": 2785.0785
   }
-]
+]```
 
 🔄 Optional: Convert TSV to JSON
 
 To convert your nav.tsv file to nav.json directly in Git Bash, run:
 
-awk -F'\t' 'BEGIN{print "["} {
+```awk -F'\t' 'BEGIN{print "["} {
   printf "%s{\"scheme\":\"%s\",\"nav\":%s}", (NR==1?"":","), gensub(/"/,"\\\"","g",$1), $2
-} END{print "]"}' nav.tsv > nav.json
+} END{print "]"}' nav.tsv > nav.json```
 
 ✅ Expected Files After Execution
 extract_nav.sh   # Shell script
